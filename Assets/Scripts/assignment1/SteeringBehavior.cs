@@ -25,13 +25,31 @@ public class SteeringBehavior : MonoBehaviour
     {
         // Assignment 1: If a single target was set, move to that target
         //                If a path was set, follow that path ("tightly")
-
+        //calculates the distance from car to target
         float dist = (target - transform.position).magnitude;
-        Vector3 dir = target - transform.forward;
+        //calculates the vector direction from the car to the target
+        Vector3 dir = target - transform.position;
+        //calculates the angle from the front of the car to the target
         float angle = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
+        //labels the dist and angle variables to text in game
         label.text = dist.ToString() + " " + angle.ToString();
-        kinematic.SetDesiredSpeed(kinematic.GetMaxSpeed());
-        kinematic.SetDesiredRotationalVelocity(angle * angle * Mathf.Sign(angle));
+
+        //calls KinematicBehavior to set the rotational velocity to the angle squared
+        //calls KinematicBehavior to set the speed to its max speed
+        if(dist > 20)
+        {
+            kinematic.SetDesiredSpeed(kinematic.GetMaxSpeed());
+            kinematic.SetDesiredRotationalVelocity(angle * angle * Mathf.Sign(angle));
+        }
+        if (dist < 20)
+        {
+            kinematic.SetDesiredSpeed(kinematic.GetMaxSpeed() * dist / 20);
+            kinematic.SetDesiredRotationalVelocity(kinematic.GetMaxRotationalVelocity() * Mathf.Sign(angle));
+        }
+        if (dist < 1)
+        {
+            kinematic.SetDesiredSpeed(0);
+        }
         // you can use kinematic.SetDesiredSpeed(...) and kinematic.SetDesiredRotationalVelocity(...)
         //    to "request" acceleration/decceleration to a target speed/rotational velocity
     }
