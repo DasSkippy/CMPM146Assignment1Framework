@@ -69,7 +69,7 @@ public class SteeringBehavior : MonoBehaviour
             // you can use kinematic.SetDesiredSpeed(...) and kinematic.SetDesiredRotationalVelocity(...)
             //    to "request" acceleration/decceleration to a target speed/rotational velocity
         }
-        kinematic.setTargetPosition(target);
+        SetTarget(target);
     }
 
     public void SetTarget(Vector3 target)
