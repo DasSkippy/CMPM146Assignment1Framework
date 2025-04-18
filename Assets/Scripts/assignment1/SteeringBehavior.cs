@@ -11,7 +11,9 @@ public class SteeringBehavior : MonoBehaviour
     // you can use this label to show debug information,
     // like the distance to the (next) target
     public TextMeshProUGUI label;
-    
+    private bool pathStart;
+    private int i = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -23,22 +25,26 @@ public class SteeringBehavior : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {   
-
-        if (path != null && path.Count > 0) {
-
-            Vector3 waypoint = path[0];
-            float waypointDist = Vector3.Distance(waypoint, transform.position);
-            target = waypoint;
-
-            if (waypointDist < wpthreshold) {
-                path.RemoveAt(0);
-                if (path.Count == 0) {
-                    path = null;
-                }
-            }
-
+    {
+        Debug.Log(i);
+        if (path == null)
+        {
+            pathStart = true;
         }
+        if (path != null && (pathStart == true || (transform.position - target).magnitude <= 1.5))
+        {
+            pathStart = false;
+            if (i > path.Count - 1)
+            {
+                return;
+            }
+            else
+            {
+                target = path[i];
+                i++;
+            }
+        }
+
         // Assignment 1: If a single target was set, move to that target
         //                If a path was set, follow that path ("tightly")
         //calculates the distance from car to target
@@ -50,25 +56,17 @@ public class SteeringBehavior : MonoBehaviour
         //labels the dist and angle variables to text in game
         label.text = dist.ToString() + " " + angle.ToString();
 
-        Vector3 adjustedTarget = target;
-
-        if (dist < 3f && Mathf.Abs(angle) > 30f) {
-            path.Add(transform.position + transform.forward * 20f);
-            path.RemoveAt(0);
-            path.Add(target);
-        }
-
         //calls KinematicBehavior to set the rotational velocity to the angle squared
         //calls KinematicBehavior to set the speed to its max speed
-        if(dist > 20)
+        if (dist > 20)
         {
             kinematic.SetDesiredSpeed(kinematic.GetMaxSpeed());
             kinematic.SetDesiredRotationalVelocity(angle * 2 * Mathf.Sign(angle));
         }
-        else if (dist > 1)
+        else if (dist > 1.5)
         {
             kinematic.SetDesiredSpeed(kinematic.GetMaxSpeed() * dist / 20);
-            kinematic.SetDesiredRotationalVelocity(kinematic.GetMaxRotationalVelocity() * Mathf.Sign(angle));
+            kinematic.SetDesiredRotationalVelocity(kinematic.GetMaxRotationalVelocity() * Mathf.Sign(angle) * dist / 20);
         }
         else
         {
@@ -76,12 +74,14 @@ public class SteeringBehavior : MonoBehaviour
         }
         // you can use kinematic.SetDesiredSpeed(...) and kinematic.SetDesiredRotationalVelocity(...)
         //    to "request" acceleration/decceleration to a target speed/rotational velocity
-        
-        if (path != null && path.Count > 0) {
-            SetTarget(path[0]);
-            return;
+        if (path != null && transform.position == target)
+        {
+            for(int i = 1; i < path.Count; i++)
+            {
+                target = path[i];
+                Debug.Log("called");
+            }
         }
-        SetTarget(adjustedTarget);
     }
 
     public void SetTarget(Vector3 target)
