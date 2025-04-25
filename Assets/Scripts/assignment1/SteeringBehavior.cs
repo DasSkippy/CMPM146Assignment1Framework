@@ -54,7 +54,9 @@ public class SteeringBehavior : MonoBehaviour
         //calculates the angle from the front of the car to the target
         float angle = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
         //labels the dist and angle variables to text in game
-        label.text = dist.ToString() + " " + angle.ToString();
+        if (label != null) {
+            label.text = dist.ToString() + " " + angle.ToString();
+        }
 
         //calls KinematicBehavior to set the rotational velocity to the angle squared
         //calls KinematicBehavior to set the speed to its max speed
