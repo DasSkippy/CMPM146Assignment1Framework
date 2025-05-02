@@ -26,7 +26,6 @@ public class SteeringBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(i);
         if (path == null)
         {
             pathStart = true;

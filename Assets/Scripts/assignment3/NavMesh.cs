@@ -21,6 +21,18 @@ public class NavMesh : MonoBehaviour
     {
         Graph g = new Graph();
         g.all_nodes = new List<GraphNode>();
+        for (int i = 0; i < outline.Count() - 1; i++)
+        {
+            if(Vector3.SignedAngle((outline[i + 1].start - outline[i + 1].end), (outline[i].start - outline[i].end), Vector3.up) > 0)
+            {
+                g.all_nodes.Add( )
+            }
+            else
+            {
+                Debug.Log("hi");
+            }
+        }
+
         return g;
     }
 
